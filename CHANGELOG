@@ -1,0 +1,14 @@
+= Version 0.2.2
+  * Adds Spree::UserPrice#currency
+
+= Version 0.2.1
+  * Adds Spree::UserPrice#to_d
+
+= Version 0.2.0
+  * Solidus 2.0
+
+= Version 0.1.0
+  * Simple update for Solidus 1.3
+
+= Version 0.0.1
+  * Initial extraction from client code
