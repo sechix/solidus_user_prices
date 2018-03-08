@@ -6,7 +6,19 @@ Spree::LineItem.class_eval do
 
     self.currency ||= order.currency
     self.cost_price ||= variant.cost_price
-    self.money_price = variant.user_price_for(pricing_options, order.user) if price.nil?
+
+    if price.nil?
+        self.money_price = variant.user_price_for(pricing_options, order.user)
+        if item_rental_period == "week"
+          self.price = variant.product.price_week.to_d
+        elsif item_rental_period == "month"
+          if item_points == 0
+            self.price = variant.product.price_month.to_d
+          else
+            self.price = 0
+          end
+        end
+    end
 
 
     true
@@ -24,6 +36,18 @@ Spree::LineItem.class_eval do
     # There's no need to call a pricer if we'll set the price directly.
     unless opts.key?(:price) || opts.key?('price')
       self.money_price = variant.user_price_for(pricing_options, user)
+
+      if item_rental_period == "week"
+        self.price = variant.product.price_week.to_d
+      elsif item_rental_period == "month"
+        if item_points == 0
+          self.price = variant.product.price_month.to_d
+        else
+          self.price = 0
+        end
+      end
+
+
     end
   end
 end

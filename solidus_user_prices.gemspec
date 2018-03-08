@@ -42,7 +42,7 @@ Allows prices for Solidus variants to be set for an individual user, or for all 
   s.add_development_dependency "poltergeist", "~> 1.11"
   s.add_development_dependency "pry-rails", "~> 0.3"
   s.add_development_dependency "rspec-rails", "~> 3.5"
-  s.add_development_dependency "rubocop", "~> 0.44"
+  s.add_development_dependency "rubocop", "~> 0.49"
   s.add_development_dependency "sass-rails", "~> 5.0"
   s.add_development_dependency "simplecov", "~> 0.12"
 end
