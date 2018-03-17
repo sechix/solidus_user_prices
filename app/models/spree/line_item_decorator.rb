@@ -11,9 +11,11 @@ Spree::LineItem.class_eval do
         self.money_price = variant.user_price_for(pricing_options, order.user)
         if item_rental_period == "week"
           self.price = variant.product.price_week.to_d
+          self.item_total = self.quantity * self.price
         elsif item_rental_period == "month"
           if item_points == 0
             self.price = variant.product.price_month.to_d
+            self.item_total = self.quantity * self.price
           else
             self.price = 0
           end
