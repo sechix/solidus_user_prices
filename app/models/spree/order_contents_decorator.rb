@@ -2,20 +2,20 @@
 # are available for that user.
 module SendUserWhenCreatingLineItems
 
-  def add(variant, quantity = 1, options = {}, rental, require_payment, require_shipping, item_rental_period, item_points)
-    line_item = add_to_line_item(variant, quantity, options, rental, require_payment, require_shipping, item_rental_period, item_points)
+  def add(variant, quantity = 1, options = {}, rental, require_payment, require_shipping, item_rental_period, item_plan)
+    line_item = add_to_line_item(variant, quantity, options, rental, require_payment, require_shipping, item_rental_period, item_plan)
     after_add_or_remove(line_item, options)
   end
 
-  def remove(variant, quantity = 1, options = {}, rental, require_payment, require_shipping, item_rental_period, item_points)
-    line_item = remove_from_line_item(variant, quantity, options, rental, require_payment, require_shipping, item_rental_period, item_points)
+  def remove(variant, quantity = 1, options = {}, rental, require_payment, require_shipping, item_rental_period, item_plan)
+    line_item = remove_from_line_item(variant, quantity, options, rental, require_payment, require_shipping, item_rental_period, item_plan)
     after_add_or_remove(line_item, options)
   end
 
 
   private
 
-    def add_to_line_item(variant, quantity, options = {}, rental, require_payment, require_shipping, item_rental_period, item_points)
+    def add_to_line_item(variant, quantity, options = {}, rental, require_payment, require_shipping, item_rental_period, item_plan)
       line_item = grab_line_item_by_variant(variant, false, options)
 
       line_item ||= order.line_items.new(
@@ -26,7 +26,7 @@ module SendUserWhenCreatingLineItems
           require_payment: require_payment,
           require_shipping: require_shipping,
           item_rental_period: item_rental_period,
-          item_points: item_points,
+          item_plan: item_plan,
       # End Add new rental fields
       )
 
@@ -41,7 +41,7 @@ module SendUserWhenCreatingLineItems
     end
 
 
-    def remove_from_line_item(variant, quantity, options = {}, rental, require_payment, require_shipping, item_rental_period, item_points)
+    def remove_from_line_item(variant, quantity, options = {}, rental, require_payment, require_shipping, item_rental_period, item_plan)
       line_item = grab_line_item_by_variant(variant, true, options)
       line_item.quantity -= quantity
       line_item.target_shipment = options[:shipment]
