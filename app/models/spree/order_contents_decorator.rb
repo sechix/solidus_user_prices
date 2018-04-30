@@ -18,6 +18,14 @@ module SendUserWhenCreatingLineItems
     def add_to_line_item(variant, quantity, options = {}, rental, require_payment, require_shipping, item_rental_period, item_plan)
       line_item = grab_line_item_by_variant(variant, false, options)
 
+      if item_rental_period == 'week'
+        item_rental_end_date = Time.current + 7.days
+      elsif item_rental_period == 'month'
+        item_rental_end_date = Time.current + 1.month
+      else
+        item_rental_end_date = nil
+      end
+
       line_item ||= order.line_items.new(
           quantity: 0,
           variant: variant,
@@ -27,6 +35,7 @@ module SendUserWhenCreatingLineItems
           require_shipping: require_shipping,
           item_rental_period: item_rental_period,
           item_plan: item_plan,
+          item_rental_end_date: item_rental_end_date,
       # End Add new rental fields
       )
 
