@@ -20,10 +20,27 @@ module SendUserWhenCreatingLineItems
 
       if item_rental_period == 'week'
         item_rental_end_date = Time.current + 7.days
-      elsif item_rental_period == 'month'
+      elsif item_rental_period == 'month' && item_plan.nil?
         item_rental_end_date = Time.current + 1.month
-      else
-        item_rental_end_date = nil
+      elsif item_rental_period == 'month' && !item_plan.nil?
+
+          @user_subscriptions = @order.user.subscriptions.undeleted.all.to_a
+          if @user_subscriptions.present?
+            @user_subscription_plan_id = @user_subscriptions.first.plan_id
+            @user_plan = Spree::Plan.active.where(id: @user_subscription_plan_id).first
+          end
+        @user_plan = Spree::Plan.active.where(id: @user_subscription_plan_id).first
+        if @user_plan
+          Stripe.api_key = @user_plan.provider.preferred_secret_key
+          stripe_customer = Stripe::Customer.retrieve(@order.user.stripe_customer_id)
+          invoice = Stripe::Invoice.upcoming(:customer =>stripe_customer.id)
+          date_invoice  = Time.at(invoice.period_end)
+
+          item_rental_end_date = date_invoice
+        else
+          flash[:error] = Spree.t(:error_product_cart)
+          redirect_to '/admin/orders'
+        end
       end
 
       line_item ||= order.line_items.new(
